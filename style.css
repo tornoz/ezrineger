@@ -1,0 +1,44 @@
+.key {
+    margin: 0 5px;
+    padding: 5px;
+    background-color: lightgray;
+}
+.key.clickable {
+    margin: 0 5px;
+    padding: 5px;
+    cursor: pointer;
+    background-color: antiquewhite;
+}
+.key.added {
+    background-color: white; 
+}
+
+#text {
+    padding: 8px;
+}
+
+#victory{
+    display: none;
+}
+
+.block.letter {
+    background-color:pink; 
+    cursor: pointer;
+    margin: 0 2px;
+}
+.letter.selected {
+    background-color: plum;
+}
+.block.cipher {
+    background-color:cyan;
+    margin: 0 2px;
+}
+.block {
+    min-width: 25px;
+    display: inline-block;
+    font-family: monospace;
+    text-align: center;
+}
+.character {
+    margin: 0 5px;     
+}
