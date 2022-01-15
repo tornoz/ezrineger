@@ -4,31 +4,30 @@
 //     var keys = texts.keys();
 // }
 
-var text = texts[0].toUpperCase();
+var text = texts['default']['text'].toUpperCase();
 for(var i in equivalences) {
     text = text.replaceAll(equivalences[i], i)
 }
-var lines = text.split('\n');
+model.text = text;
+model.lines = model.text.split('\n');
 var textContainer = document.getElementById('text');
-var state = {
-    isSelected: false,
-    selectedValue: '',
-    goal: 0,
-    score: 0
-}
 
 //   GET CIPHER
-var cipher = [...keys];
-shuffle(cipher);
+model.cipher = [...letters];
+shuffle(model.cipher);
 
-for(lineI in lines) {
-    var line = lines[lineI];
+
+// INIT VIEW FROM MODEL
+for(lineI in model.lines) {
+    var line = model.lines[lineI];
     showLine(line, textContainer);
     textContainer.append(document.createElement('br'));
     showCypher(line, textContainer);
     textContainer.append(document.createElement('br'));
 }
 
+
+// SETUP CONTROLLERS
 document.querySelectorAll('.letter').forEach(
     function(element) {
         element.addEventListener('click', 
@@ -47,88 +46,61 @@ document.querySelectorAll('.key').forEach(
     }
 );
 
+document.addEventListener('keypress', function(event) {
+    if(model.state.isSelected) {
+        var key = document.querySelector('.key[data-key="'+event.key.toUpperCase()+'"]');
+        if(key !== null) {
+            key.click();
+        }
+    }
+})
+const modal = new Modal(
+    document.querySelector('.modal')
+);
 function select(element) {
-    if(state.score !== state.goal) {
+    if(model.state.score !== model.state.goal) {
         var value = element.getAttribute('data-value');
-
-        unselect();
-        if(value === state.selectedValue) {
-            state.selectedValue = '';
-            state.selected = false;
-            document.querySelectorAll('.key').forEach(function(element) {
-                element.classList.remove('clickable');
-            });
-        } else {
-            state.selectedValue = value;
-    
-            //Select everything
-            document.querySelectorAll('span[data-value="'+state.selectedValue+'"]').forEach(function(element) {
-                element.classList.add('selected');
-            });
-            document.querySelectorAll('.key').forEach(function(element) {
-                element.classList.add('clickable');
-            });
-        
-        
-            state.selected = true;
+        model.selectLetter(value);
+        view.unselect();
+        if(model.state.isSelected) {
+            view.updateSelection(model.state.selectedValue);
         }
     }
 }
 
-function unselect() {
-    document.querySelectorAll('span[data-value="'+state.selectedValue+'"]').forEach(function(element) {
-        element.classList.remove('selected');
-    });
-}
 
 function letter(keyElement) {
-    if(state.selected) {
+    if(model.state.isSelected) {
         //Check if letter is used elsewhere and remove it
-        document.querySelectorAll('.letter').forEach(function(letterElement) {
-            if(letterElement.textContent === keyElement.textContent) {
-                letterElement.textContent = '_';
-            }
-        });
+        view.removeLetter(keyElement.textContent);
         
         //Reactivate key of previous letter
-        var currentLetter = document.querySelector('span[data-value="'+state.selectedValue+'"]').textContent;
-        if(currentLetter !== '_') {
-
-            document.querySelectorAll('.key').forEach(function(el) {
-               if(el.textContent === currentLetter) {
-                   el.classList.remove('added');
-               }
-           });
-        }
+        view.activateLetter(model.state.selectedValue);
         
         //Display letter in the case
-        document.querySelectorAll('.letter.selected').forEach(function(letterElement) {
-            if(keyElement.textContent === '⍉') {
-                letterElement.textContent = '_';
-            } else {
-                letterElement.textContent = keyElement.textContent;
-                
-            }
-        });
+        view.showLetter(keyElement.textContent);
         if(keyElement.textContent !== '⍉') {
             keyElement.classList.add('added');
         }
         calculateScore();
+        view.unselect();
+        model.state.selectedValue = '';
+        model.state.isSelected = false;
     }
     
 }
 
 function calculateScore() {
-    state.score = 0;
+    model.state.score = 0;
     document.querySelectorAll('.letter').forEach(function(letterElement) {
-        if(cipher.indexOf(letterElement.getAttribute('data-value')) === keys.indexOf(letterElement.textContent)) {
-            state.score++;
+        if(model.cipher.indexOf(letterElement.getAttribute('data-value')) === letters.indexOf(letterElement.textContent)) {
+            model.state.score++;
         }
     });
-    if(state.score === state.goal) {
-        unselect();
-        document.getElementById('textFound').innerHTML = texts[0].replace('\n', '<br/>');
-        document.getElementById('victory').style.display = 'block';
+    if(model.state.score === model.state.goal) {
+        view.unselect();
+        document.getElementById('textFound').innerHTML = model.text.replace('\n', '<br/>');
+        modal.open();
 
     }
 }
@@ -141,19 +113,17 @@ function showLine(line, textContainer) {
         element.setAttribute('data-index', i);
         if (line[i] === 'C') {
             if(line[i+1] === '’' && line[i+2] === 'H') {
-                element.setAttribute('data-value', cipher[keys.indexOf('C’H')]);
-                //element.textContent = 'C’H';
+                element.setAttribute('data-value', model.cipher[letters.indexOf('C’H')]);
                 i = i+2;
-                state.goal++;
+                model.state.goal++;
             } else if(line[i+1] === 'H') {
-                element.setAttribute('data-value', cipher[keys.indexOf('CH')]);
-                //element.textContent = 'CH';
+                element.setAttribute('data-value', model.cipher[letters.indexOf('CH')]);
                 i++;
-                state.goal++;
+                model.state.goal++;
             }
-        }else if (inArray(line[i], keys)){
-            element.setAttribute('data-value', cipher[keys.indexOf(line[i])]);
-            state.goal++;
+        }else if (inArray(line[i], letters)){
+            element.setAttribute('data-value', model.cipher[letters.indexOf(line[i])]);
+            model.state.goal++;
         } else {
             element.className='character';
             element.textContent = line[i];
@@ -169,14 +139,14 @@ function showCypher(line, textContainer) {
         element.className='cipher block';
         if (line[i] === 'C') {
             if(line[i+1] === '’' && line[i+2] === 'H') {
-                element.textContent = cipher[keys.indexOf('C’H')];
+                element.textContent = model.cipher[letters.indexOf('C’H')];
                 i = i+2;
             } else if(line[i+1] === 'H') {
-                element.textContent = cipher[keys.indexOf('CH')];
+                element.textContent = model.cipher[letters.indexOf('CH')];
                 i++;
             }
-        } else if (inArray(line[i], keys)){
-            element.textContent = cipher[keys.indexOf(line[i])];
+        } else if (inArray(line[i], letters)){
+            element.textContent = model.cipher[letters.indexOf(line[i])];
         } else {
             element.className='character';
             element.textContent = ' ';
@@ -190,3 +160,10 @@ function replaceEquivalences(text) {
 
 }
 
+function save() {
+
+}
+
+function load() {
+    
+}

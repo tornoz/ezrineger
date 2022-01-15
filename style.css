@@ -1,44 +1,154 @@
+body {
+    background-color: rgb(18, 18, 19);
+    font-family: "Clear Sans", "Helvetica Neue", Arial, Sans
+}
+
+header {
+    color: rgb(215, 218, 220);
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 30pt;
+}
+
+
+#container {
+    max-width: 1024px;
+    margin: auto;
+}
+#keyboard {
+    width: 600px;
+    margin: auto;
+}
+.row {
+    margin: 10px 0;
+}
+.row:nth-child(2) {
+    margin-left: 20px;
+}
+.row:nth-child(3) {
+    margin-left: 72px;
+}
 .key {
-    margin: 0 5px;
-    padding: 5px;
-    background-color: lightgray;
+    color: rgb(215, 218, 220);
+    font-weight: 700;
+    font-size: 12pt;
+    margin: 0 6px;
+    height: 58px;
+    width: 40px;
+    border-radius: 4px;
+    background-color: rgb(129, 131, 132);
+
 }
 .key.clickable {
-    margin: 0 5px;
-    padding: 5px;
     cursor: pointer;
-    background-color: antiquewhite;
 }
 .key.added {
-    background-color: white; 
+    background-color: rgb(58, 58, 60); 
 }
 
 #text {
     padding: 8px;
 }
 
-#victory{
-    display: none;
-}
 
 .block.letter {
-    background-color:pink; 
+    border: 2px solid #3a3a3c;
     cursor: pointer;
-    margin: 0 2px;
+    height: 25px;
+    padding-top: 5px;
 }
-.letter.selected {
-    background-color: plum;
+.letter.selected, .letter.selected.filled {
+    background-color: rgb(181, 159, 59);
+}
+.letter.filled {
+    background-color: rgb(58, 58, 60);
 }
 .block.cipher {
-    background-color:cyan;
-    margin: 0 2px;
+    margin: 2px 4px;
 }
 .block {
-    min-width: 25px;
+    height: 30px;
+    margin: 2px 2px;
+    min-width: 30px;
     display: inline-block;
     font-family: monospace;
     text-align: center;
+    color: rgb(215, 218, 220);
+    font-size:12pt;
 }
 .character {
     margin: 0 5px;     
+}
+
+
+.modal-content {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 90%;
+    pointer-events: auto;
+    background-color: #181819;
+    background-clip: padding-box;
+    border: 2px solid rgba(60,60,60);
+    border-radius: .3rem;
+    outline: 0;
+}
+
+.modal {
+    position: absolute;
+    z-index: 1050;
+    display: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    color: rgb(215, 218, 220);
+}
+
+.modal-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(.3rem - 1px);
+    border-top-right-radius: calc(.3rem - 1px);
+}
+.modal-title {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+.modal-header button {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    float: right;
+}
+.modal-body {
+    padding: 1rem;
+}
+.modal-body button {
+    padding: 1rem;
+    float: right;
+    background-color: rgb(129, 131, 132);
+}
+.modal-body h1 {
+    margin-top: 0;
+}
+.show-modal.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
