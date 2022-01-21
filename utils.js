@@ -11,9 +11,14 @@ var indexOfObject = function(needle, haystack) {
     }
 }
 
+var getDayString = function() {
+    var date = new Date();
+    return date.getDate()+date.getMonth()+date.getYear();
+}
+
 var shuffle = function (array) {
     let currentIndex = array.length,  randomIndex;
-  
+    Math.seedrandom(getDayString());
     while (currentIndex != 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;

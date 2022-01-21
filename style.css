@@ -57,12 +57,25 @@ header {
     cursor: pointer;
     height: 25px;
     padding-top: 5px;
+    transform: rotateY(180deg);
+    color:rgb(18, 18, 19);
 }
-.letter.selected, .letter.selected.filled {
+.letter.selected {
+    background-color: rgb(181, 159, 59);
+    color:rgb(181, 159, 59);
+}
+.letter.selected.filled {
     background-color: rgb(181, 159, 59);
 }
 .letter.filled {
     background-color: rgb(58, 58, 60);
+    color:rgb(215, 218, 220);
+    transform: rotateY(0deg);
+
+	transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: relative;
 }
 .block.cipher {
     margin: 2px 4px;

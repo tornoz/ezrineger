@@ -37,7 +37,7 @@ var view = {
            });
         }
     },
-    showLetter: function(letter) {
+    showSelectedLetter: function(letter) {
         document.querySelectorAll('.letter.selected').forEach(function(letterElement) {
             if(letter === '⍉') {
                 letterElement.textContent = '_';
@@ -47,5 +47,18 @@ var view = {
                 letterElement.classList.add('filled');
             }
         });
-    }
+    },
+    showLetter: function(cipher, letter) {
+        console.log(document.querySelectorAll('.letter[data-value="'+cipher+'"]'));
+        console.log('.letter[data-value="'+cipher+'"]');
+        document.querySelectorAll('.letter[data-value="'+cipher+'"]').forEach(function(letterElement) {
+            if(letter === '⍉') {
+                letterElement.textContent = '_';
+                letterElement.classList.remove('filled');
+            } else {
+                letterElement.textContent = letter;
+                letterElement.classList.add('filled');
+            }
+        });
+    },
 }

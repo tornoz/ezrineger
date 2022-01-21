@@ -15,6 +15,10 @@ var textContainer = document.getElementById('text');
 //   GET CIPHER
 model.cipher = [...letters];
 shuffle(model.cipher);
+model.solution = {};
+for(var i in model.cipher) {
+    model.solution[model.cipher[i]] = null;
+}
 
 
 // INIT VIEW FROM MODEL
@@ -45,6 +49,16 @@ document.querySelectorAll('.key').forEach(
         })
     }
 );
+
+
+document.querySelector('.reset').addEventListener('click',
+    function (event) {
+        reset();
+        save();
+    }
+);
+
+load();
 
 document.addEventListener('keypress', function(event) {
     if(model.state.isSelected) {
@@ -78,7 +92,9 @@ function letter(keyElement) {
         view.activateLetter(model.state.selectedValue);
         
         //Display letter in the case
-        view.showLetter(keyElement.textContent);
+        view.showSelectedLetter(keyElement.textContent);
+        model.solution[model.state.selectedValue] = keyElement.textContent;
+        save();
         if(keyElement.textContent !== '⍉') {
             keyElement.classList.add('added');
         }
@@ -161,9 +177,26 @@ function replaceEquivalences(text) {
 }
 
 function save() {
-
+    window.localStorage.setItem('solution', JSON.stringify(model.solution));
 }
 
 function load() {
-    
+    if(window.localStorage.getItem('solution') !== null) {
+        model.solution = JSON.parse(window.localStorage.getItem('solution'));
+        for(var cipher in model.solution) {
+            if(model.solution[cipher] !== null) {
+                view.showLetter(cipher, model.solution[cipher]);
+            }
+        }
+    }
+   
+}
+
+function reset() {
+    for(var cipher in model.solution) {
+        if(model.solution[cipher] !== null) {
+            view.showLetter(cipher, '⍉');
+            model.solution[cipher] = null;
+        }
+    }
 }
